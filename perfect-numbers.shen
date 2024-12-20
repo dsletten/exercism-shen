@@ -39,6 +39,20 @@
 \* (define aliquot-factors *\
 \*   N -> (filter (/. D (divides? D N)) (make-range 1 (div N 2)))) *\
 
+
+
+(define classify
+  N -> (examine N (sum (aliquot-factors N))) where (positive? N))
+
+(define examine
+  N N -> "perfect"
+  N Sum -> "deficient" where (< Sum N)
+  N _ -> "abundant")
+
+\\
+\\    Need to use `ceiling' here to simplify termination test in `factors'
+\\    I.e., I = L => done
+\\
 (define aliquot-factors
   N -> (remove N (factors N 1 (ceiling (sqrt N)) [])))
 
@@ -54,6 +68,11 @@
 \*                        (factors N (+ 1 I) L (cons J (cons I R)))) ) *\
 \*                  (factors N (+ 1 I) L R))) *\
 
+\\
+\\    Inputs M J I R
+\\    If M = 0, then I is a factor. J is too, but only keep it if I != J.
+\\    见 Common Lisp LOOP version
+\\
 (define add-factors
   0 I I R -> (cons I R)
   0 J I R -> (cons J (cons I R))
@@ -62,11 +81,3 @@
 (define factors
   _ L L R -> R
   N I L R -> (factors N (+ 1 I) L (add-factors (mod N I) (/ N I) I R)))
-
-(define classify
-  N -> (examine N (sum (aliquot-factors N))) where (positive? N))
-
-(define examine
-  N N -> "perfect"
-  N Sum -> "deficient" where (< Sum N)
-  N _ -> "abundant")
