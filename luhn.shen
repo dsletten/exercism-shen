@@ -51,11 +51,11 @@
 
 (define transform-a
   D [] -> [D]
-  D0 [D|Ds] -> (cons D0 (transform-b D Ds)))
+  D0 [D|Ds] -> [D0|(transform-b D Ds)])
 
 (define transform-b
   D [] -> [(transform D)]
-  D Ds -> (cons (transform D) (transform-digits Ds)))
+  D Ds -> [(transform D)|(transform-digits Ds)])
 
 \\    Invalid
 \* (valid? "1") *\
